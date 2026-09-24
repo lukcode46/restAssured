@@ -1,0 +1,51 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Rest Assured tests</title>
+<pre id="out">Running…</pre>
+<script src="core.js"></script>
+<script>
+(async () => {
+  const C = window.RestAssuredCore;
+  const lines = [];
+  let failed = 0;
+  function ok(condition, name) {
+    if (condition) lines.push(`PASS ${name}`);
+    else { lines.push(`FAIL ${name}`); failed += 1; }
+  }
+  try {
+    ok(C.overlaps('2026-01-01T10:00:00Z','2026-01-01T12:00:00Z','2026-01-01T11:00:00Z','2026-01-01T13:00:00Z'), 'overlap detected');
+    ok(!C.overlaps('2026-01-01T10:00:00Z','2026-01-01T12:00:00Z','2026-01-01T12:00:00Z','2026-01-01T13:00:00Z'), 'touching windows do not overlap');
+    ok(C.validateTimeWindow('2026-01-01T12:00:00Z','2026-01-01T10:00:00Z').length > 0, 'invalid time window rejected');
+
+    const s = C.blankState();
+    s.team.aliases = [{id:'a',alias:'Cedar',role:''},{id:'b',alias:'Birch',role:''}];
+    const p = {assignments:[{id:'x',coverageAliasId:'b',state:'accepted',start:'2026-01-01T10:00:00Z',end:'2026-01-01T12:00:00Z'}]};
+    const conflict = C.findAcceptedConflict(p.assignments,{id:'y',coverageAliasId:'b',state:'accepted',start:'2026-01-01T11:00:00Z',end:'2026-01-01T13:00:00Z'});
+    ok(Boolean(conflict), 'overlapping accepted coverage rejected');
+    ok(!C.findAcceptedConflict(p.assignments,{id:'y',coverageAliasId:'a',state:'accepted',start:'2026-01-01T11:00:00Z',end:'2026-01-01T13:00:00Z'}), 'different receiver is not a conflict');
+
+    const draft = C.buildCovenantDraft('secular', {restMeaning:'rest means stepping away',coverageRule:'coverage is accepted explicitly',genuineExceptions:'exceptions are discussed openly',pauseRule:'nonessential work can pause'});
+    ok(draft.includes('rest means stepping away') && draft.includes('nonessential work can pause'), 'covenant draft uses team answers');
+
+    const demo = C.createDemoState();
+    ok(demo.team.aliases.map(x=>x.alias).join(',') === 'Cedar,Birch,Ash', 'demo uses synthetic aliases');
+    ok(demo.covenant.status === 'adopted' && demo.periods[0].assignments.length === 4, 'demo includes adopted covenant and rota');
+    ok(!demo.periods[0].assignments.some(a => a.state === 'accepted' && !a.coverageAliasId), 'accepted demo coverage always has a receiver');
+
+    const pass = 'correct horse battery staple';
+    const vault = await C.encryptState(demo, pass);
+    ok(vault.format === 'rest-assured-encrypted-v1' && vault.ciphertext && !JSON.stringify(vault).includes('Cedar'), 'vault is encrypted and omits plaintext alias');
+    const roundtrip = await C.decryptVault(vault, pass);
+    ok(roundtrip.team.aliases[0].alias === 'Cedar', 'encryption roundtrip succeeds');
+    let wrongFailed = false;
+    try { await C.decryptVault(vault, 'this is the wrong passphrase'); } catch (_) { wrongFailed = true; }
+    ok(wrongFailed, 'wrong passphrase fails');
+  } catch (err) {
+    lines.push(`ERROR ${err.stack || err}`);
+    failed += 1;
+  }
+  lines.push(`RESULT ${failed === 0 ? 'PASS' : 'FAIL'} (${failed} failed)`);
+  document.querySelector('#out').textContent = lines.join('\n');
+  document.title = failed === 0 ? 'TESTS PASS' : 'TESTS FAIL';
+})();
+</script>

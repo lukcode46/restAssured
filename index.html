@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#173f36">
+  <meta name="color-scheme" content="light">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: blob:; style-src 'self'; script-src 'self'; connect-src 'none'; font-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'self'">
+  <title>Rest Assured</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="assets/icon-192.png" type="image/png">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <div id="app-shell" class="app-shell hidden" aria-hidden="true">
+    <header class="topbar no-print">
+      <button id="brand-home" class="brand-button" type="button" aria-label="Go to overview">
+        <span class="brand-mark" aria-hidden="true">◐</span>
+        <span><strong>Rest Assured</strong><small>shared rest practice</small></span>
+      </button>
+      <div class="topbar-actions">
+        <span id="save-state" class="save-state" aria-live="polite">Locked</span>
+        <button id="print-button" class="button ghost" type="button">Print schedule</button>
+        <button id="settings-button" class="button ghost" type="button">Settings</button>
+        <button id="lock-button" class="button ghost" type="button">Lock</button>
+      </div>
+    </header>
+
+    <div class="layout">
+      <nav class="side-nav no-print" aria-label="Primary">
+        <button data-view="overview" class="nav-item active" type="button"><span aria-hidden="true">⌂</span>Home</button>
+        <button data-view="covenant" class="nav-item" type="button"><span aria-hidden="true">✦</span>Agreement</button>
+        <button data-view="rota" class="nav-item" type="button"><span aria-hidden="true">↻</span>Coverage</button>
+        <button data-view="pulse" class="nav-item" type="button"><span aria-hidden="true">◔</span>Reflect</button>
+      </nav>
+
+      <main id="main" class="main" tabindex="-1">
+        <section id="view-overview" class="view active"></section>
+        <section id="view-covenant" class="view"></section>
+        <section id="view-rota" class="view"></section>
+        <section id="view-pulse" class="view"></section>
+        <section id="view-settings" class="view"></section>
+      </main>
+    </div>
+  </div>
+
+  <main id="gate" class="gate">
+    <section class="gate-card" aria-labelledby="gate-title">
+      <div class="gate-art" aria-hidden="true">
+        <img src="assets/lantern.png" alt="">
+        <div class="gate-art-overlay"></div>
+        <div class="gate-art-copy">
+          <p class="eyebrow light">Rest Assured</p>
+          <h1 id="gate-title">Share the work.<br>Protect the rest.</h1>
+          <p>A simple team agreement and coverage schedule that helps people step away without leaving the work invisible.</p>
+        </div>
+      </div>
+
+      <div class="gate-panel">
+        <div id="welcome-panel">
+          <p class="eyebrow">Private team space</p>
+          <h2>Agree. Cover. Reflect.</h2>
+          <p class="lede">Your team makes one agreement, shares coverage, and checks whether the plan held. Data stays encrypted on this browser and aliases are the default.</p>
+          <details class="plain-details"><summary>Privacy note</summary><p>This prototype is one-device only and has no cloud sync or tracking. A real high-risk deployment still needs an independent security review.</p></details>
+          <div class="stack gap-sm">
+            <button id="create-vault-button" class="button primary full" type="button">Create team space</button>
+            <button id="unlock-existing-button" class="button secondary full hidden" type="button">Open existing team</button>
+            <label class="button ghost full file-button">Restore encrypted backup<input id="import-gate-file" type="file" accept="application/json,.json" hidden></label>
+          </div>
+        </div>
+
+        <form id="create-vault-form" class="hidden" novalidate>
+          <button class="text-button back-to-welcome" type="button">← Back</button>
+          <p class="eyebrow">Create team space</p>
+          <h2>Protect this team with a passphrase.</h2>
+          <p class="lede">There is no account or recovery service, so use a passphrase the team can safely retain.</p>
+          <label class="field"><span>Passphrase</span><input id="new-passphrase" type="password" autocomplete="new-password" minlength="12" required><small>At least 12 characters. Prefer several unrelated words.</small></label>
+          <label class="field"><span>Confirm passphrase</span><input id="confirm-passphrase" type="password" autocomplete="new-password" minlength="12" required></label>
+          <label class="field"><span>Team name <em>optional</em></span><input id="new-team-label" type="text" maxlength="80" placeholder="e.g., Local team"></label>
+          <label class="check-card"><input id="load-demo" type="checkbox"><span><strong>Load fictional Cedar / Birch / Ash demo</strong><small>Useful for the pitch. It contains only synthetic data.</small></span></label>
+          <div id="create-error" class="form-error" role="alert"></div>
+          <button class="button primary full" type="submit">Create team space</button>
+        </form>
+
+        <form id="unlock-form" class="hidden" novalidate>
+          <button class="text-button back-to-welcome" type="button">← Back</button>
+          <p class="eyebrow">Welcome back</p>
+          <h2>Open your team space.</h2>
+          <label class="field"><span>Passphrase</span><input id="unlock-passphrase" type="password" autocomplete="current-password" required autofocus></label>
+          <div id="unlock-error" class="form-error" role="alert"></div>
+          <button class="button primary full" type="submit">Open team space</button>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <div id="modal-root"></div>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script src="core.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
